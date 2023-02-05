@@ -1,0 +1,51 @@
+{
+  "name": "loan-coop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fullcalendar/core": "^6.0.2",
+    "@fullcalendar/daygrid": "^6.0.2",
+    "@fullcalendar/list": "^6.0.2",
+    "@fullcalendar/timegrid": "^6.0.2",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.3",
+    "@mui/x-data-grid": "^5.17.21",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/core": "^0.80.0",
+    "@nivo/geo": "^0.80.0",
+    "@nivo/line": "^0.80.0",
+    "@nivo/pie": "^0.80.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.2.2",
+    "decimal.js": "^10.4.3",
+    "formik": "^2.2.9",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-fetch-hook": "^1.9.5",
+    "react-number-format": "^5.1.3",
+    "react-pro-sidebar": "^0.7.1",
+    "react-router-dom": "^6.7.0",
+    "react-scripts": "5.0.1",
+    "sort-by": "^1.2.0",
+    "web-vitals": "^2.1.4",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.26",
+    "@types/react-dom": "^18.0.9",
+    "@vitejs/plugin-react": "^3.0.0",
+    "vite": "^4.0.0"
+  }
+}
