@@ -1,3 +1,4 @@
+import { Decimal } from "decimal.js";
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -16,38 +17,63 @@ import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AddCardIcon from "@mui/icons-material/AddCard";
 
 import { tokens } from "../../theme";
+import { useLoaderData } from "react-router-dom";
+import { http } from "../../http";
 
 const columns = [
   {
     id: "date",
     label: "Date",
+    align: "center",
   },
   {
     id: "name",
     label: "Name",
+    align: "center",
   },
   {
     id: "purpose",
     label: "Purpose",
+    align: "center",
   },
   {
     id: "receipt_id",
     label: "OR#",
-    align: "right",
+    align: "center",
   },
   {
     id: "amount",
     label: "Amount (Php)",
-    align: "right",
+    align: "center",
   },
   {
     id: "terms",
     label: "terms",
-    align: "right",
+    align: "center",
   },
 ];
 
-function CashIn() {
+export async function cashOutLoader() {
+  let data = await http.get("/cash-outs").then((result) => result.data);
+
+  return data;
+}
+const PHPPrice = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "PHP",
+});
+
+const loan_types = [
+  "regular",
+  "appliance",
+  "multi-purpose",
+  "balik-eskwela",
+  "birthday",
+  "emergency",
+];
+
+function CashOut() {
+  const result = useLoaderData();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -68,7 +94,11 @@ function CashIn() {
       >
         <Grid container columnSpacing={2.5} rowSpacing={2.5} mb="20px">
           <StatPaper
-            title="&#8369; 431,520.00"
+            title={PHPPrice.format(
+              result
+                .reduce((i, data) => i.add(data.amount), new Decimal(0))
+                .toString()
+            )}
             subtitle="Total Cash Withdrawn"
             icon={
               <AddCardIcon
@@ -76,52 +106,25 @@ function CashIn() {
               />
             }
           />
-          <StatPaper
-            title="&#8369; 23,340.00"
-            subtitle="Regular Loan"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-          <StatPaper
-            title="&#8369; 23,340.00"
-            subtitle="Multi-Purpose Loan"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-          <StatPaper
-            title="&#8369; 23,340.00"
-            subtitle="Birthday Loan"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-          <StatPaper
-            title="&#8369; 23,340.00"
-            subtitle="Balik-Eskwela Loan"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-          <StatPaper
-            title="&#8369; 23,340.00"
-            subtitle="Emergency Loan"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
+          {loan_types.map((type) => (
+            <StatPaper
+              key={type}
+              title={PHPPrice.format(
+                result
+                  .filter((data) => data.purpose === type)
+                  .reduce((i, data) => i.add(data.amount), new Decimal(0))
+                  .toString()
+              )}
+              subtitle={`${type.toUpperCase()} LOAN`}
+              icon={
+                <PointOfSaleIcon
+                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                />
+              }
+            />
+          ))}
         </Grid>
+
         <TableContainer
           component={Paper}
           elevation={5}
@@ -163,14 +166,16 @@ function CashIn() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>[date]</TableCell>
-                <TableCell>[member name]</TableCell>
-                <TableCell>[purpose]</TableCell>
-                <TableCell align="right">[Receipt Id]</TableCell>
-                <TableCell align="right">[amount]</TableCell>
-                <TableCell align="right">[terms]</TableCell>
-              </TableRow>
+              {result.map((data) => (
+                <TableRow>
+                  <TableCell align="center">{data.date}</TableCell>
+                  <TableCell align="center">{data.member.name}</TableCell>
+                  <TableCell align="center">{data.purpose}</TableCell>
+                  <TableCell align="center">{data._id}</TableCell>
+                  <TableCell align="center">{data.amount}</TableCell>
+                  <TableCell align="center">{data.terms}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -179,4 +184,4 @@ function CashIn() {
   );
 }
 
-export default CashIn;
+export default CashOut;

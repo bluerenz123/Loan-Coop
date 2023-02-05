@@ -2,6 +2,8 @@ const Loan = require("../models/loan");
 const LoanPayment = require("../models/loan_payment");
 const Status = require("../models/status");
 const Member = require("../models/member");
+const CashIn = require("../models/cash_in");
+const CashOut = require("../models/cash_out");
 
 exports.list = async (req, res, next) => {
   let list_loan = await Loan.find({});
@@ -16,8 +18,6 @@ exports.application = async (req, res, next) => {
       comakers_email.push(req.body[key]);
     }
   });
-
-  console.log(req.files);
 
   let filenames = [];
   Object.values(req.files).forEach((files) => {
@@ -62,7 +62,6 @@ exports.application = async (req, res, next) => {
   new_loan.save();
   member_status.save();
 
-  console.log({ new_loan, member_status });
   return res.json({ new_loan, member_status });
 };
 
@@ -95,7 +94,17 @@ exports.status_update = async (req, res, next) => {
 
     loan_updated.save();
     member_status.save();
-    return res.json({ loan_updated, member_status });
+
+    let new_cash_out = new CashOut({
+      member: member_status.member,
+      purpose: loan_updated.type,
+      amount: loan_updated.amount,
+      terms: loan_updated.terms,
+    });
+
+    new_cash_out.save();
+
+    return res.json({ loan_updated, member_status, new_cash_out });
   } else if (status === "rejected") {
     let member_status = await Status.findOneAndUpdate(
       {
@@ -162,7 +171,16 @@ exports.payment = async (req, res, next) => {
 
   new_payment.save();
 
-  res.json({ status, new_payment, loan });
+  let new_cash_in = new CashIn({
+    _id: new_payment._id,
+    member: status.member,
+    purpose: req.body.option,
+    amount: req.body.amount,
+  });
+
+  new_cash_in.save();
+
+  res.json({ status, new_payment, loan, new_cash_in });
 };
 
 exports.pending_loans = async (req, res, next) => {

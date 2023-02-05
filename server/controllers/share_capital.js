@@ -1,6 +1,6 @@
 const ShareCapital = require("../models/share_capital");
 const ShareCapitalPayment = require("../models/share_capital_payment");
-const Status = require("../models/status");
+const CashIn = require("../models/cash_in");
 
 exports.detail = async (req, res, next) => {
   let sc_status = await ShareCapital.findOne({
@@ -31,7 +31,16 @@ exports.payment = async (req, res, next) => {
   sc_payment.balance = sc_status.total_amount;
   sc_payment.save();
 
-  res.json({ sc_status, sc_payment });
+  let new_cash_in = new CashIn({
+    _id: sc_payment._id,
+    member: req.params.member_id,
+    purpose: "share-capital",
+    amount: sc_payment.amount,
+  });
+
+  new_cash_in.save();
+
+  res.json({ sc_status, sc_payment, new_cash_in });
 };
 
 exports.withdraw = async (req, res, next) => {};

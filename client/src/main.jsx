@@ -30,8 +30,8 @@ import NewLoans, { newLoansLoader } from "./routes/loan-officer/NewLoans";
 import UpdateLoans, {
   updateLoansLoader,
 } from "./routes/loan-officer/UpdateLoans";
-import CashOut from "./routes/treasurer/CashOut";
-import CashIn from "./routes/treasurer/CashIn";
+import CashOut, { cashOutLoader } from "./routes/treasurer/CashOut";
+import CashIn, { cashInLoader } from "./routes/treasurer/CashIn";
 import PendingLoans, {
   pendingLoansLoader,
 } from "./routes/board-of-director/PendingLoans";
@@ -165,10 +165,12 @@ const router = createBrowserRouter([
               {
                 path: "cash-in",
                 element: <CashIn />,
+                loader: cashInLoader,
               },
               {
                 path: "cash-out",
                 element: <CashOut />,
+                loader: cashOutLoader,
               },
               {
                 path: "login",

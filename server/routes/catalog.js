@@ -35,6 +35,7 @@ const admin_controller = require("../controllers/admin");
 const member_controller = require("../controllers/member");
 const loan_controller = require("../controllers/loan");
 const share_capital_controller = require("../controllers/share_capital");
+const cashflow_controller = require("../controllers/cashflow");
 
 /// ADMIN ROUTES
 router.post("/loan-officer/login", admin_controller.loan_officer_login);
@@ -80,10 +81,13 @@ router.post(
   share_capital_controller.payment
 );
 router.get("/share-capital/:member_id", share_capital_controller.detail);
-
 router.get(
   "/share-capitals/approved",
   share_capital_controller.approved_list
 );
+
+/// CASHFLOW ROUTES
+router.get("/cash-ins", cashflow_controller.cash_in_list);
+router.get("/cash-outs", cashflow_controller.cash_out_list);
 
 module.exports = router;

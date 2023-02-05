@@ -109,7 +109,16 @@ exports.status_update = async (req, res, next) => {
 
     new_sc_payment.save();
 
-    res.json({ member, new_sc_payment, sc_update });
+    let new_cash_in = new CashIn({
+      _id: new_sc_payment._id,
+      member: req.params.id,
+      purpose: "membership",
+      amount: sc_status.initial_investment,
+    });
+
+    new_cash_in.save();
+
+    res.json({ member, new_sc_payment, sc_update, new_cash_in });
   } else {
     let member = await Member.findByIdAndDelete(req.params.id);
     let status = await Status.findOneAndDelete({ member: req.params.id });
