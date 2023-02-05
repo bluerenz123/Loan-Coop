@@ -167,7 +167,7 @@ function CashOut() {
             </TableHead>
             <TableBody>
               {result.map((data) => (
-                <TableRow>
+                <TableRow key={data.id}>
                   <TableCell align="center">{data.date}</TableCell>
                   <TableCell align="center">{data.member.name}</TableCell>
                   <TableCell align="center">{data.purpose}</TableCell>
