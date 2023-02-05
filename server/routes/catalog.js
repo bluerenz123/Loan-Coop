@@ -22,12 +22,13 @@ const upload = multer({
   storage: storage,
 });
 
-const co_makers_file = [
+const files = [
   { name: "co_maker_file_1", maxCount: 1 },
   { name: "co_maker_file_2", maxCount: 1 },
   { name: "co_maker_file_3", maxCount: 1 },
   { name: "co_maker_file_4", maxCount: 1 },
   { name: "co_maker_file_5", maxCount: 1 },
+  { name: "pay_slip_file", maxCount: 1 },
 ];
 
 const admin_controller = require("../controllers/admin");
@@ -41,12 +42,16 @@ router.post("/admin/create", admin_controller.create);
 router.get("/admins", admin_controller.list);
 
 /// MEMBER ROUTES
-router.post("/member/register", member_controller.register);
+router.post(
+  "/member/register",
+  upload.single("pay_slip_file"),
+  member_controller.register
+);
 router.post("/member/login", member_controller.login);
 router.post("/member/:id/status-update", member_controller.status_update);
 router.post(
   "/loan/:member_id/application",
-  upload.fields(co_makers_file),
+  upload.fields(files),
   loan_controller.application
 );
 router.get("/members", member_controller.list);
@@ -62,6 +67,7 @@ router.get("/current-status/:member_id", member_controller.current_status);
 /// LOAN ROUTES
 router.post("/loan/:id/status-update", loan_controller.status_update);
 router.post("/loan/:id/payment", loan_controller.payment);
+router.get("/loans/new", loan_controller.new_loans);
 router.get("/loans/updated", loan_controller.updated_loans);
 router.get("/loans/approved", loan_controller.approved_loans);
 router.get("/loans", loan_controller.list);

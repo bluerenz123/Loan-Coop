@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router-dom";
+import { Decimal } from "decimal.js";
 
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
@@ -27,6 +28,13 @@ const columns = [
     format: (value) => value.toLocaleString("en-US"),
   },
   {
+    id: "appliance",
+    label: "Appliance Loan",
+    minWidth: 100,
+    align: "right",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
     id: "multi-purpose",
     label: "Multi-Purpose Loan",
     minWidth: 100,
@@ -34,15 +42,15 @@ const columns = [
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "birthday",
-    label: "Birthday Loan",
+    id: "balik-eskwela",
+    label: "Balik-Eskwela Loan",
     minWidth: 100,
     align: "right",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "balik-eskwela",
-    label: "Balik-Eskwela Loan",
+    id: "birthday",
+    label: "Birthday Loan",
     minWidth: 100,
     align: "right",
     format: (value) => value.toLocaleString("en-US"),
@@ -70,6 +78,11 @@ const columns = [
   },
 ];
 
+const PHPPrice = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "PHP",
+});
+
 export async function updateLoansLoader() {
   let loans = await http
     .get("/loans/updated")
@@ -80,8 +93,17 @@ export async function updateLoansLoader() {
   return loans;
 }
 
+const loan_types = [
+  "regular",
+  "appliance",
+  "multi-purpose",
+  "balik-eskwela",
+  "birthday",
+  "emergency",
+];
+
 function UpdateLoans() {
-  const result = useLoaderData;
+  const result = useLoaderData();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -92,7 +114,7 @@ function UpdateLoans() {
           title="UPDATE LOANS (MONTHLY)"
           subtitle="This is the summary monthly deductions of update loans"
         />
-        <Typography>[form month sht]</Typography>
+        {/* <Typography>[form month sht]</Typography> */}
       </Box>
       <Box
         display="flex"
@@ -102,7 +124,7 @@ function UpdateLoans() {
       >
         <Grid container columnSpacing={2.5} rowSpacing={2.5} mb="20px">
           <StatPaper
-            title="10"
+            title={result.length}
             subtitle="Update Loans"
             icon={
               <RecentActorsIcon
@@ -111,7 +133,22 @@ function UpdateLoans() {
             }
           />
           <StatPaper
-            title="&#8369; 234,340.00"
+            title={PHPPrice.format(
+              result
+                .reduce(
+                  (i, status) =>
+                    i.add(
+                      status.current_loans
+                        .filter((l) => l.status === "approved")
+                        .reduce(
+                          (i, loan) => i.add(loan.monthly_deduction),
+                          new Decimal(0)
+                        )
+                    ),
+                  new Decimal(0)
+                )
+                .toFixed(2)
+            )}
             subtitle="Monthly Deductions"
             icon={
               <RecentActorsIcon
@@ -120,7 +157,15 @@ function UpdateLoans() {
             }
           />
           <StatPaper
-            title="&#8369; 10,200.00"
+            title={PHPPrice.format(
+              result
+                .reduce(
+                  (i, status) =>
+                    i.add(status.share_capital.monthly_investment),
+                  new Decimal(0)
+                )
+                .toFixed(2)
+            )}
             subtitle="Monthly Share Capital Investment"
             icon={
               <RecentActorsIcon
@@ -170,78 +215,46 @@ function UpdateLoans() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>[member name]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[share capital]</TableCell>
-                <TableCell align="right">
-                  [total monthly deductions]
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>[member name]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[share capital]</TableCell>
-                <TableCell align="right">
-                  [total monthly deductions]
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>[member name]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[share capital]</TableCell>
-                <TableCell align="right">
-                  [total monthly deductions]
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>[member name]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[share capital]</TableCell>
-                <TableCell align="right">
-                  [total monthly deductions]
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>[member name]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[share capital]</TableCell>
-                <TableCell align="right">
-                  [total monthly deductions]
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>[member name]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[loan]</TableCell>
-                <TableCell align="right">[share capital]</TableCell>
-                <TableCell align="right">
-                  [total monthly deductions]
-                </TableCell>
-              </TableRow>
+              {result.map((loan) => (
+                <TableRow key={loan.id}>
+                  <TableCell>{loan.member.name}</TableCell>
+                  {loan_types.map((type) => {
+                    let curr_loan_type = loan.current_loans.find(
+                      (l) => l.type === type
+                    );
+                    if (
+                      !!curr_loan_type &&
+                      curr_loan_type.status === "approved"
+                    ) {
+                      return (
+                        <TableCell key={type} align="right">
+                          {PHPPrice.format(
+                            curr_loan_type.monthly_deduction
+                          )}
+                        </TableCell>
+                      );
+                    } else {
+                      return (
+                        <TableCell key={type} align="right">
+                          _
+                        </TableCell>
+                      );
+                    }
+                  })}
+                  <TableCell align="right">
+                    {PHPPrice.format(
+                      loan.share_capital.monthly_investment
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {PHPPrice.format(
+                      new Decimal(loan.total_monthly_deductions)
+                        .add(loan.share_capital.monthly_investment)
+                        .toString()
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -90,42 +90,42 @@ const MemberNav = ({ selected, setSelected }) => {
           />
           <Item
             title="Regular Loan"
-            to={`/member/regular-loan/${account.id}`}
+            to={`/member/regular/${account.id}`}
             icon={<ReceiptOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
           <Item
             title="Multi-Purpose Loan"
-            to={`/member/multi-purpose-loan/${account.id}`}
+            to={`/member/multi-purpose/${account.id}`}
             icon={<ReceiptOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
           <Item
             title="Appliance Loan"
-            to={`/member/appliance-loan/${account.id}`}
+            to={`/member/appliance/${account.id}`}
             icon={<ReceiptOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
           <Item
             title="Balik-Eskwela Loan"
-            to={`/member/balik-eskwela-loan/${account.id}`}
+            to={`/member/balik-eskwela/${account.id}`}
             icon={<ReceiptOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
           <Item
             title="Birthday Loan"
-            to={`/member/birthday-loan/${account.id}`}
+            to={`/member/birthday/${account.id}`}
             icon={<ReceiptOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
           <Item
             title="Emergency Loan"
-            to={`/member/emergency-loan/${account.id}`}
+            to={`/member/emergency/${account.id}`}
             icon={<ReceiptOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
@@ -186,27 +186,7 @@ const LoanOfficerNav = ({ selected, setSelected }) => {
         selected={selected}
         setSelected={setSelected}
       />
-      <Typography
-        variant="h6"
-        color={colors.grey[300]}
-        sx={{ m: "15px 0 5px 20px" }}
-      >
-        Pendings
-      </Typography>
-      <Item
-        title="Pending Members"
-        to="/loan-officer/pending-members"
-        icon={<PersonOutlinedIcon />}
-        selected={selected}
-        setSelected={setSelected}
-      />
-      <Item
-        title="Pending Loans"
-        to="/loan-officer/pending-loans"
-        icon={<CalendarTodayOutlinedIcon />}
-        selected={selected}
-        setSelected={setSelected}
-      />
+
       <Typography
         variant="h6"
         color={colors.grey[300]}
@@ -333,6 +313,27 @@ const BoDNav = ({ selected, setSelected }) => {
       >
         BOARD OF DIRECTOR
       </Typography>
+      <Typography
+        variant="h6"
+        color={colors.grey[300]}
+        sx={{ m: "15px 0 5px 20px" }}
+      >
+        Pendings
+      </Typography>
+      <Item
+        title="Pending Members"
+        to="/board-of-director/pending-members"
+        icon={<PersonOutlinedIcon />}
+        selected={selected}
+        setSelected={setSelected}
+      />
+      <Item
+        title="Pending Loans"
+        to="/board-of-director/pending-loans"
+        icon={<CalendarTodayOutlinedIcon />}
+        selected={selected}
+        setSelected={setSelected}
+      />
       <Typography
         variant="h6"
         color={colors.grey[300]}
@@ -547,7 +548,6 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
           )}
-          <LoanOfficerNav selected={selected} setSelected={setSelected} />
 
           {/* TREASURER NAV */}
           {account?.position === "treasurer" && (
@@ -558,6 +558,11 @@ const Sidebar = () => {
           {account?.position === "board-of-director" && (
             <BoDNav selected={selected} setSelected={setSelected} />
           )}
+
+          <BoDNav selected={selected} setSelected={setSelected} />
+          <TreasurerNav selected={selected} setSelected={setSelected} />
+          <LoanOfficerNav selected={selected} setSelected={setSelected} />
+
           {!account && (
             <LoginNav selected={selected} setSelected={setSelected} />
           )}

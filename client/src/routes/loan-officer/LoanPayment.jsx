@@ -147,7 +147,8 @@ function LoanPayment() {
                   }}
                   inputValue={inputValue}
                   onInputChange={(event, newInputValue) => {
-                    setInputValue(newInputValue);
+                    if (newInputValue !== null)
+                      setInputValue(newInputValue);
                   }}
                   options={options}
                   fullWidth
@@ -171,7 +172,8 @@ function LoanPayment() {
                     }}
                     inputValue={loanValue}
                     onInputChange={(event, newInputValue) => {
-                      setLoanValue(newInputValue);
+                      if (newInputValue !== null)
+                        setLoanValue(newInputValue);
                     }}
                     options={loanOption}
                     fullWidth

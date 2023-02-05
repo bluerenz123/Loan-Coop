@@ -31,8 +31,22 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 import { loanRules, coMakerPolicy, loanTerms } from "./data";
 import { useEffect } from "react";
+import { http } from "../../http";
 
-export async function LoanApplicationAction({ request }) {
+export async function LoanApplicationLoader({ params }) {
+  let current_status = await http
+    .get(`/current-status/${params.id}`)
+    .then((result) => result.data);
+
+  let comakers = await http
+    .get(`/comakers/${params.id}`)
+    .then((result) => result.data);
+
+  console.log(comakers);
+  return { current_status, comakers };
+}
+
+export async function LoanApplicationAction({ request, params }) {
   const formData = await request.formData();
   const loan_application = Object.fromEntries(formData);
 
@@ -40,7 +54,7 @@ export async function LoanApplicationAction({ request }) {
 
   let result = await axios
     .post(
-      `http://localhost:4020/loan/63dd0a7c8a16aff0ec8b7526/application`,
+      `http://localhost:4020/loan/${params.id}/application`,
       loan_application,
       {
         headers: {
@@ -116,7 +130,7 @@ const loan_types = [
   },
 ];
 
-const CoMakerInput = ({ i }) => {
+const CoMakerInput = ({ i, comakers }) => {
   return (
     <Grid container columnSpacing={3} rowSpacing={3}>
       <Grid item xs={12} sm={6} md={4}>
@@ -172,56 +186,56 @@ const NumberFormatCustom = forwardRef(function NumberFormatCustom(
   );
 });
 
-const comakers = [
-  {
-    _id: "63de45f7ed5f1cc2f693459b",
-    first_name: "1",
-    last_name: "sample",
-    department: "cos",
-    contact_number: "09214765154",
-    email: "1@sample.com",
-    password: "password test",
-    status: "approved",
-    createdAt: "2023-02-04T11:48:07.133Z",
-    updatedAt: "2023-02-04T11:48:24.670Z",
-    __v: 0,
-    name: "1 sample",
-    url: "/member/63de45f7ed5f1cc2f693459b",
-    id: "63de45f7ed5f1cc2f693459b",
-  },
-  {
-    _id: "63de4c03ed5f1cc2f69345a6",
-    first_name: "2",
-    last_name: "sample",
-    department: "cos",
-    contact_number: "09214765154",
-    email: "2@sample.com",
-    password: "password test",
-    status: "approved",
-    createdAt: "2023-02-04T12:13:55.835Z",
-    updatedAt: "2023-02-04T12:14:03.390Z",
-    __v: 0,
-    name: "2 sample",
-    url: "/member/63de4c03ed5f1cc2f69345a6",
-    id: "63de4c03ed5f1cc2f69345a6",
-  },
-  {
-    _id: "63de4c18ed5f1cc2f69345b1",
-    first_name: "3",
-    last_name: "sample",
-    department: "cos",
-    contact_number: "09214765154",
-    email: "3@sample.com",
-    password: "password test",
-    status: "approved",
-    createdAt: "2023-02-04T12:14:16.359Z",
-    updatedAt: "2023-02-04T12:14:21.470Z",
-    __v: 0,
-    name: "3 sample",
-    url: "/member/63de4c18ed5f1cc2f69345b1",
-    id: "63de4c18ed5f1cc2f69345b1",
-  },
-];
+// const comakers = [
+//   {
+//     _id: "63de45f7ed5f1cc2f693459b",
+//     first_name: "1",
+//     last_name: "sample",
+//     department: "cos",
+//     contact_number: "09214765154",
+//     email: "1@sample.com",
+//     password: "password test",
+//     status: "approved",
+//     createdAt: "2023-02-04T11:48:07.133Z",
+//     updatedAt: "2023-02-04T11:48:24.670Z",
+//     __v: 0,
+//     name: "1 sample",
+//     url: "/member/63de45f7ed5f1cc2f693459b",
+//     id: "63de45f7ed5f1cc2f693459b",
+//   },
+//   {
+//     _id: "63de4c03ed5f1cc2f69345a6",
+//     first_name: "2",
+//     last_name: "sample",
+//     department: "cos",
+//     contact_number: "09214765154",
+//     email: "2@sample.com",
+//     password: "password test",
+//     status: "approved",
+//     createdAt: "2023-02-04T12:13:55.835Z",
+//     updatedAt: "2023-02-04T12:14:03.390Z",
+//     __v: 0,
+//     name: "2 sample",
+//     url: "/member/63de4c03ed5f1cc2f69345a6",
+//     id: "63de4c03ed5f1cc2f69345a6",
+//   },
+//   {
+//     _id: "63de4c18ed5f1cc2f69345b1",
+//     first_name: "3",
+//     last_name: "sample",
+//     department: "cos",
+//     contact_number: "09214765154",
+//     email: "3@sample.com",
+//     password: "password test",
+//     status: "approved",
+//     createdAt: "2023-02-04T12:14:16.359Z",
+//     updatedAt: "2023-02-04T12:14:21.470Z",
+//     __v: 0,
+//     name: "3 sample",
+//     url: "/member/63de4c18ed5f1cc2f69345b1",
+//     id: "63de4c18ed5f1cc2f69345b1",
+//   },
+// ];
 
 const PHPPrice = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -229,7 +243,7 @@ const PHPPrice = new Intl.NumberFormat("en-US", {
 });
 
 function LoanApplication() {
-  const current_status = useLoaderData();
+  const { current_status, comakers } = useLoaderData();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -296,7 +310,7 @@ function LoanApplication() {
   const handleAmountChange = (e) => {
     let amt = e.target.value;
 
-    if (amt < 0) {
+    if (amt < 0 || amt === "") {
       setPrincipal(0);
     } else if (amt > 150000) {
       setPrincipal(150000);
@@ -328,7 +342,7 @@ function LoanApplication() {
   const handleTermsChange = (e) => {
     let trm = e.target.value;
 
-    if (trm < 1) {
+    if (trm < 1 || trm === "") {
       setTerms(1);
     } else if (trm > 24 && principal < 100000) {
       setTerms(24);
@@ -456,6 +470,14 @@ function LoanApplication() {
                     onChange={handleTermsChange}
                   />
                 </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    fullWidth
+                    type="file"
+                    name="pay_slip_file"
+                    helperText="Upload your current pay slip"
+                  />
+                </Grid>
               </Grid>
 
               <Typography variant="h3" pb="20px">
@@ -530,7 +552,11 @@ function LoanApplication() {
                   </IconButton>
                 </Box>
                 {Array.from(Array(coMakers).keys()).map((i) => (
-                  <CoMakerInput i={i + 1} key={i + 1} />
+                  <CoMakerInput
+                    i={i + 1}
+                    key={i + 1}
+                    comakers={comakers}
+                  />
                 ))}
               </Box>
 

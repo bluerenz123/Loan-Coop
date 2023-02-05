@@ -29,7 +29,11 @@ export async function registerAction({ request }) {
 
   console.log(register_form);
   let result = await axios
-    .post(`http://localhost:4020/member/register`, register_form)
+    .post(`http://localhost:4020/member/register`, register_form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
     .then((result) => result.data);
 
   console.log(result);
@@ -163,6 +167,7 @@ function Register() {
                 }}
                 onChange={handleInitInvestment}
                 fullWidth
+                required
               />
             </Grid>
             <Grid item xs={12} lg={6}>
@@ -172,9 +177,20 @@ function Register() {
                 label="Monthly Investment"
                 defaultValue={100}
                 fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12} lg={6}>
+              <TextField
+                name="pay_slip_file"
+                type="file"
+                helperText="Upload your current pay slip here"
+                fullWidth
+                required
               />
             </Grid>
           </Grid>
+
           <Button
             type="submit"
             variant="contained"

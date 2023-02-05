@@ -34,6 +34,9 @@ export async function shareCapitalPaymentLoader() {
     .then((result) => result.data);
 
   console.log(result);
+
+  result = result.filter((sc_status) => sc_status.member !== null);
+
   let options = result.map((sc_status) => sc_status.member.email);
 
   return { result, options };
@@ -66,7 +69,13 @@ function ShareCapitalPayment() {
   );
   const [inputValue, setInputValue] = useState("");
 
-  useEffect(() => console.log({ result, options }), []);
+  useEffect(() => {
+    if (value) {
+      setAmount(
+        result.find((a) => a.member.email === value).monthly_investment
+      );
+    }
+  }, [value]);
 
   return (
     <Box height="85vh" display="flex" flexDirection="column">
@@ -83,7 +92,6 @@ function ShareCapitalPayment() {
         }}
       >
         <Box
-          component={Form}
           sx={{
             height: "100%",
             width: {
@@ -93,7 +101,6 @@ function ShareCapitalPayment() {
             },
             mb: "30px",
           }}
-          method="post"
         >
           <Paper
             sx={{
@@ -124,7 +131,8 @@ function ShareCapitalPayment() {
                   }}
                   inputValue={inputValue}
                   onInputChange={(event, newInputValue) => {
-                    setInputValue(newInputValue);
+                    if (newInputValue !== null)
+                      setInputValue(newInputValue);
                   }}
                   options={options}
                   fullWidth
@@ -139,7 +147,7 @@ function ShareCapitalPayment() {
               </Grid>
             </Grid>
             {!!scStatus && (
-              <Box>
+              <Box component={Form} method="post">
                 <Typography variant="h3" pb="20px">
                   Member Information
                 </Typography>
@@ -207,7 +215,9 @@ function ShareCapitalPayment() {
                       name="amount"
                       type="number"
                       label="Amount"
+                      helperText="Input the amount to be payed."
                       fullWidth
+                      required
                       value={amount}
                       onChange={(e) => {
                         setAmount(e.target.value);
@@ -218,6 +228,7 @@ function ShareCapitalPayment() {
                     <TextField
                       name="option"
                       label="Payment Option"
+                      helperText="Choose payment option"
                       select
                       fullWidth
                       defaultValue="pay-slip"

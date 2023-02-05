@@ -46,6 +46,8 @@ exports.comakers = (req, res, next) => {
 };
 
 exports.register = (req, res, next) => {
+  console.log(req.file);
+
   const new_member = new Member({
     first_name: req.body.first_name,
     last_name: req.body.last_name,
@@ -53,11 +55,13 @@ exports.register = (req, res, next) => {
     contact_number: req.body.contact_number,
     email: req.body.email,
     password: req.body.password,
+    pay_slip_file: req.file.filename,
     status: "pending",
   });
 
   const new_share_capital = new ShareCapital({
     member: new_member,
+    monthly_investment: req.body.monthly_investment,
     initial_investment: req.body.initial_investment,
     total_amount: req.body.initial_investment,
   });
@@ -135,7 +139,10 @@ exports.current_status = async (req, res, next) => {
     member: req.params.member_id,
   })
     .populate("share_capital")
-    .populate("current_loans");
+    .populate({
+      path: "current_loans",
+      populate: "loan_payments",
+    });
 
   res.json(result);
 };

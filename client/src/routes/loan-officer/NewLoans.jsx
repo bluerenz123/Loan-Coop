@@ -1,3 +1,4 @@
+import { Decimal } from "decimal.js";
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -13,15 +14,23 @@ import StatPaper from "../../components/StatPaper";
 import RecentActorsIcon from "@mui/icons-material/RecentActors";
 
 import { tokens } from "../../theme";
+import { http } from "../../http";
+import { useLoaderData } from "react-router-dom";
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "type", label: "Loan Type", minWidth: 100, align: "right" },
+  {
+    id: "date",
+    label: "Date",
+    minWidth: 100,
+    align: "center",
+  },
+  { id: "name", label: "Name", minWidth: 170, align: "center" },
+  { id: "type", label: "Loan Type", minWidth: 100, align: "center" },
   {
     id: "amount",
     label: "Amount",
     minWidth: 100,
-    align: "right",
+    align: "center",
     format: (value) => value.toLocaleString("en-US"),
   },
 
@@ -29,31 +38,38 @@ const columns = [
     id: "terms",
     label: "Terms",
     minWidth: 100,
-    align: "right",
+    align: "center",
   },
   {
     id: "balance",
     label: "Balance",
     minWidth: 100,
-    align: "right",
+    align: "center",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "monthly-deduction",
     label: "Monthly Deduction",
     minWidth: 100,
-    align: "right",
+    align: "center",
     format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "date",
-    label: "Date",
-    minWidth: 100,
-    align: "right",
   },
 ];
 
+const PHPPrice = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "PHP",
+});
+
+export async function newLoansLoader() {
+  let data = await http.get("/loans/new").then((result) => result.data);
+
+  console.log(data);
+  return data;
+}
+
 function NewLoans() {
+  let result = useLoaderData();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -64,7 +80,7 @@ function NewLoans() {
           title="NEW LOANS (MONTHLY)"
           subtitle="This is the summary of new loans per month"
         />
-        <Typography>[form month sht]</Typography>
+        <Typography>[some form]</Typography>
       </Box>
       <Box
         display="flex"
@@ -83,7 +99,14 @@ function NewLoans() {
             }
           />
           <StatPaper
-            title="&#8369; 234,340.00"
+            title={PHPPrice.format(
+              result
+                .reduce(
+                  (i, loan) => i.add(loan.monthly_deduction),
+                  new Decimal(0)
+                )
+                .toFixed(2)
+            )}
             subtitle="Monthly Deductions"
             icon={
               <RecentActorsIcon
@@ -92,8 +115,12 @@ function NewLoans() {
             }
           />
           <StatPaper
-            title="&#8369; 10,200.00"
-            subtitle="Monthly Share Capital Investment"
+            title={PHPPrice.format(
+              result
+                .reduce((i, loan) => i.add(loan.balance), new Decimal(0))
+                .toFixed(2)
+            )}
+            subtitle="Total Balance"
             icon={
               <RecentActorsIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -121,7 +148,7 @@ function NewLoans() {
             textAlign="center"
             sx={{ p: "10px 20px", borderBottom: "4px solid #141b2d" }}
           >
-            LIST OF NEW LOANS (MM - YYYY)
+            LIST OF NEW LOANS
           </Typography>
           <Table sx={{ overflowX: "scroll" }} stickyHeader>
             <TableHead>
@@ -142,15 +169,23 @@ function NewLoans() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>[member name]</TableCell>
-                <TableCell align="right">[loan type]</TableCell>
-                <TableCell align="right">[amount]</TableCell>
-                <TableCell align="right">[terms]</TableCell>
-                <TableCell align="right">[balance]</TableCell>
-                <TableCell align="right">[monthly deduction]</TableCell>
-                <TableCell align="right">[date]</TableCell>
-              </TableRow>
+              {result.map((loan) => (
+                <TableRow key={loan.id}>
+                  <TableCell align="center">{loan.created_at}</TableCell>
+                  <TableCell align="center">{loan.member.name}</TableCell>
+                  <TableCell align="center">{loan.type}</TableCell>
+                  <TableCell align="center">
+                    {PHPPrice.format(loan.principal)}
+                  </TableCell>
+                  <TableCell align="center">{loan.terms}</TableCell>
+                  <TableCell align="center">
+                    {PHPPrice.format(loan.balance)}
+                  </TableCell>
+                  <TableCell align="center">
+                    {PHPPrice.format(loan.monthly_deduction)}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

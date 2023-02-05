@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
-import axios from "axios";
-import { http } from "../../http";
 
 // MUI Components
 import { Box, Typography, Grid, useTheme, Button } from "@mui/material";
@@ -24,6 +22,12 @@ import { mockDataLoanApplication2 } from "../../data/mockData";
 import RecentActorsIcon from "@mui/icons-material/RecentActors";
 
 import { tokens } from "../../theme";
+import { http } from "../../http";
+
+const PHPPrice = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "PHP",
+});
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -45,16 +49,25 @@ const columns = [
     minWidth: 100,
   },
   { id: "name", label: "Name", align: "center", minWidth: 170 },
-  {
-    id: "department",
-    label: "Department",
-    align: "center",
-    minWidth: 170,
-  },
+  { id: "type", label: "Loan Type", align: "center", minWidth: 170 },
 
   {
-    id: "initial_investment",
-    label: "Initial Investment",
+    id: "principal",
+    label: "Principal Amount",
+    minWidth: 100,
+    align: "center",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "terms",
+    label: "Terms",
+    minWidth: 100,
+    align: "center",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "balance",
+    label: "Balance",
     minWidth: 100,
     align: "center",
     format: (value) => value.toLocaleString("en-US"),
@@ -67,20 +80,16 @@ const columns = [
   },
 ];
 
-const PHPPrice = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "PHP",
-});
-
-export async function pendingMembersLoader() {
-  let pending_members = await http
-    .get("/pending-members")
+export async function pendingLoansLoader() {
+  let pending_loans = await http
+    .get("/pending-loans")
     .then((result) => result.data);
-  console.log(pending_members);
-  return pending_members;
+
+  console.log(pending_loans);
+  return pending_loans;
 }
 
-function PendingMembers() {
+function PendingLoans() {
   const result = useLoaderData();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -88,9 +97,10 @@ function PendingMembers() {
   return (
     <Box display="flex" flexDirection="column" height="100%">
       <Header
-        title="PENDING MEMBERS"
-        subtitle="This is where the pending members gets membership approval."
+        title="PENDING LOANS"
+        subtitle="This is the summary table of pending loans."
       />
+
       <Box
         display="flex"
         flexDirection="column"
@@ -126,7 +136,6 @@ function PendingMembers() {
                 borderBottom: `none`,
               },
               minHeight: "50vh",
-              maxHeight: "70vh",
             }}
           >
             <Typography
@@ -134,7 +143,7 @@ function PendingMembers() {
               textAlign="center"
               sx={{ p: "10px 20px", borderBottom: "4px solid #141b2d" }}
             >
-              LIST OF CURRENTLY PENDING MEMBERS
+              LIST OF LOANS APPLICATION
             </Typography>
             <Table sx={{ overflowX: "scroll" }} stickyHeader>
               <TableHead>
@@ -155,29 +164,40 @@ function PendingMembers() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {result.map((status) => (
-                  <TableRow key={status}>
+                {result.map((loan) => (
+                  <TableRow key={loan.id}>
+                    <TableCell align="center">{loan.created_at}</TableCell>
                     <TableCell align="center">
-                      {status.member.created_at}
+                      {loan.member.name}
+                    </TableCell>
+                    <TableCell align="center">{loan.type}</TableCell>
+                    <TableCell align="center">
+                      {PHPPrice.format(loan.principal)}
                     </TableCell>
                     <TableCell align="center">
-                      {status.member.name}
+                      {loan.terms} months
                     </TableCell>
                     <TableCell align="center">
-                      {status.member.department.toUpperCase()}
-                    </TableCell>
-                    <TableCell align="center">
-                      {PHPPrice.format(status.initial_investment)}
+                      {PHPPrice.format(loan.balance)}
                     </TableCell>
                     <TableCell align="center" sx={{ p: 0 }}>
                       <Link
-                        to={`/loan-officer/pending-member/${status.member.id}`}
+                        to={`/board-of-director/pending-loan/${loan.id}`}
                         style={{
                           textDecoration: "none",
                           color: "inherit",
                         }}
                       >
-                        <Button variant="contained">See more</Button>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            "&:hover": {
+                              background: colors.primary[500],
+                            },
+                          }}
+                        >
+                          See more
+                        </Button>
                       </Link>
                     </TableCell>
                   </TableRow>
@@ -191,4 +211,4 @@ function PendingMembers() {
   );
 }
 
-export default PendingMembers;
+export default PendingLoans;

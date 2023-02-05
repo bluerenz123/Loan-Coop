@@ -23,6 +23,9 @@ const LoanSchema = new Schema(
       },
     ],
 
+    pay_slip_file: {
+      type: String,
+    },
     type: {
       type: String,
       enum: [
@@ -78,6 +81,12 @@ const LoanSchema = new Schema(
       type: Number,
       required: true,
     },
+    accrued_penalty: {
+      type: mongoose.Types.Decimal128,
+      required: true,
+      get: getValue,
+      default: 0,
+    },
 
     status: {
       type: String,
@@ -87,6 +96,15 @@ const LoanSchema = new Schema(
     date_of_approval: {
       type: Date,
     },
+
+    credit_commitee_chairman: {
+      type: String,
+    },
+    credit_commitee_members: [
+      {
+        type: String,
+      },
+    ],
 
     loan_payments: [
       {

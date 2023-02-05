@@ -10,6 +10,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import Modal from "@mui/material/Modal";
 
 import Header from "../../components/Header";
 
@@ -39,7 +40,7 @@ export async function pendingMemberDetailAction({ request, params }) {
     }
   );
 
-  return redirect("/loan-officer/pending-members");
+  return redirect("/board-of-director/pending-members");
 }
 
 function PendingMemberDetail() {
@@ -48,6 +49,10 @@ function PendingMemberDetail() {
   const colors = tokens(theme.palette.mode);
 
   const [status, setStatus] = useState("approved");
+  const [paySlipImage, setPaySlipImage] = useState(false);
+
+  const handleOpen = () => setPaySlipImage(true);
+  const handleClose = () => setPaySlipImage(false);
 
   return (
     <Box display="flex" flexDirection="column" height="100%">
@@ -153,6 +158,22 @@ function PendingMemberDetail() {
                 fullWidth
               />
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography mr={2}>Pay Slip Image: </Typography>
+
+              <Button variant="contained" onClick={handleOpen}>
+                View Image
+              </Button>
+            </Grid>
           </Grid>
           <Typography variant="h3" sx={{ p: "0 0 20px" }}>
             Approval Actions
@@ -192,6 +213,33 @@ function PendingMemberDetail() {
           </Box>
         </Paper>
       </Box>
+      <Modal open={paySlipImage} onClose={handleClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            display: "flex",
+            justifyContent: "center",
+            width: {
+              xs: "100%",
+              sm: "50%",
+            },
+          }}
+        >
+          <img
+            style={{
+              maxHeight: "90vh",
+              width: "100%",
+              maxWidth: "90vh",
+            }}
+            src={`http://localhost:4020/images/${result.member.pay_slip_file}`}
+            alt="comaker payslip"
+            crossOrigin="anonymous"
+          />
+        </Box>
+      </Modal>
     </Box>
   );
 }

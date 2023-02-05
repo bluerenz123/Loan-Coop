@@ -11,23 +11,27 @@ exports.list = async (req, res, next) => {
 
 exports.application = async (req, res, next) => {
   let comakers_email = [];
-
   Object.keys(req.body).forEach((key) => {
     if (key.includes("co_maker")) {
       comakers_email.push(req.body[key]);
     }
   });
 
+  console.log(req.files);
+
   let filenames = [];
   Object.values(req.files).forEach((files) => {
-    let temp = files[0].filename;
-    filenames.push(temp);
+    if (files[0].fieldname.includes("co_maker")) {
+      let temp = files[0].filename;
+      filenames.push(temp);
+    }
   });
 
   const new_loan = new Loan({
     member: req.params.member_id,
     co_makers: [],
     co_makers_files: filenames,
+    pay_slip_file: req.files.pay_slip_file[0].filename,
 
     type: req.body.type,
     principal: req.body.principal,
@@ -85,14 +89,9 @@ exports.status_update = async (req, res, next) => {
       { new: true }
     );
 
-    loan_updated.update(
-      {
-        $currentDate: {
-          date_of_approval: true,
-        },
-      },
-      { new: true }
-    );
+    loan_updated.date_of_approval = new Date();
+    loan_updated.credit_commitee_chairman =
+      req.body.credit_commitee_chairman;
 
     loan_updated.save();
     member_status.save();
@@ -202,21 +201,24 @@ exports.approved_loans = async (req, res, next) => {
 };
 
 exports.updated_loans = async (req, res, next) => {
-  // let loans = await Loan.aggregate([
-  //   {
-  //     $addFields: {
-  //       year: { $year: "$createdAt" },
-  //       month: { $month: "$createdAt" },
-  //     },
-  //   },
-  // ]);
-
   let status_loans = await Status.find()
     .populate("member")
     .populate("current_loans")
     .populate("share_capital");
 
-  status_loans = status_loans.filter((loan) => loan.member !== null);
+  status_loans = status_loans.filter(
+    (loan) => loan.member !== null && loan.member.status === "approved"
+  );
 
   return res.json(status_loans);
+};
+
+exports.new_loans = async (req, res, next) => {
+  let loans = await Loan.find({
+    status: "approved",
+  }).populate("member");
+
+  loans = loans.filter((loan) => loan.terms === loan.remaining_terms);
+
+  return res.json(loans);
 };

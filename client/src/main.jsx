@@ -20,12 +20,13 @@ import LoanOfficerLogin, {
 import LoanOfficerDashboard from "./routes/loan-officer/Dashboard";
 import BoDLogin from "./routes/board-of-director/Login";
 import TreasurerLogin from "./routes/treasurer/Login";
-import Loan from "./routes/member/Loan";
+import Loan, { loanLoader } from "./routes/member/Loan";
 import LoanApplication, {
   LoanApplicationAction,
+  LoanApplicationLoader,
 } from "./routes/member/LoanApplication";
 import ErrorPage from "./error-page";
-import NewLoans from "./routes/loan-officer/NewLoans";
+import NewLoans, { newLoansLoader } from "./routes/loan-officer/NewLoans";
 import UpdateLoans, {
   updateLoansLoader,
 } from "./routes/loan-officer/UpdateLoans";
@@ -33,19 +34,19 @@ import CashOut from "./routes/treasurer/CashOut";
 import CashIn from "./routes/treasurer/CashIn";
 import PendingLoans, {
   pendingLoansLoader,
-} from "./routes/loan-officer/PendingLoans";
+} from "./routes/board-of-director/PendingLoans";
 import MyAccount from "./routes/member/MyAccount";
 import PendingMembers, {
   pendingMembersLoader,
-} from "./routes/loan-officer/PendingMembers";
+} from "./routes/board-of-director/PendingMembers";
 import PendingMemberDetail, {
   pendingMemberDetailAction,
   pendingMemberDetailLoader,
-} from "./routes/loan-officer/PendingMemberDetail";
+} from "./routes/board-of-director/PendingMemberDetail";
 import PendingLoanDetail, {
   pendingLoanDetailAction,
   pendingLoanDetailLoader,
-} from "./routes/loan-officer/PendingLoanDetail";
+} from "./routes/board-of-director/PendingLoanDetail";
 import Logout from "./routes/Logout";
 import ShareCapitalPayment, {
   shareCapitalPaymentAction,
@@ -78,39 +79,20 @@ const router = createBrowserRouter([
                 loader: memberDashboardLoader,
               },
               {
+                path: ":loan_type/:member_id",
+                element: <Loan />,
+                loader: loanLoader,
+              },
+              {
                 path: "share-capital/:id",
                 element: <ShareCapital />,
                 loader: shareCapitalLoader,
               },
               {
-                path: "regular-loan/:id",
-                element: <Loan type="regular" />,
-              },
-              {
-                path: "multi-purpose-loan/:id",
-                element: <Loan type="multi-purpose" />,
-              },
-              {
-                path: "appliance-loan/:id",
-                element: <Loan type="appliance" />,
-              },
-              {
-                path: "birthday-loan/:id",
-                element: <Loan type="birthday" />,
-              },
-              {
-                path: "balik-eskwela-loan/:id",
-                element: <Loan type="balik-eskwela" />,
-              },
-              {
-                path: "emergency-loan/:id",
-                element: <Loan type="emergency" />,
-              },
-              {
                 path: "loan-application/:id",
                 element: <LoanApplication />,
+                loader: LoanApplicationLoader,
                 action: LoanApplicationAction,
-                loader: memberDashboardLoader,
               },
               {
                 path: "account/:id",
@@ -139,31 +121,11 @@ const router = createBrowserRouter([
                 index: true,
                 element: <LoanOfficerDashboard />,
               },
-              {
-                path: "pending-members",
-                element: <PendingMembers />,
-                loader: pendingMembersLoader,
-              },
-              {
-                path: "pending-member/:member_id",
-                element: <PendingMemberDetail />,
-                loader: pendingMemberDetailLoader,
-                action: pendingMemberDetailAction,
-              },
-              {
-                path: "pending-loans",
-                element: <PendingLoans />,
-                loader: pendingLoansLoader,
-              },
-              {
-                path: "pending-loan/:loan_id",
-                element: <PendingLoanDetail />,
-                loader: pendingLoanDetailLoader,
-                action: pendingLoanDetailAction,
-              },
+
               {
                 path: "new-loans",
                 element: <NewLoans />,
+                loader: newLoansLoader,
               },
               {
                 path: "updates-loans",
@@ -224,6 +186,28 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <>This is Board of Director's route</>,
+              },
+              {
+                path: "pending-members",
+                element: <PendingMembers />,
+                loader: pendingMembersLoader,
+              },
+              {
+                path: "pending-member/:member_id",
+                element: <PendingMemberDetail />,
+                loader: pendingMemberDetailLoader,
+                action: pendingMemberDetailAction,
+              },
+              {
+                path: "pending-loans",
+                element: <PendingLoans />,
+                loader: pendingLoansLoader,
+              },
+              {
+                path: "pending-loan/:loan_id",
+                element: <PendingLoanDetail />,
+                loader: pendingLoanDetailLoader,
+                action: pendingLoanDetailAction,
               },
               {
                 path: "login",

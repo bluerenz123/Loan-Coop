@@ -14,7 +14,7 @@ const MemberSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
 
-    proof_of_payment: String,
+    pay_slip_file: String,
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
