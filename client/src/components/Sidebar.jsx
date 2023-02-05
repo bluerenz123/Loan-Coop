@@ -559,10 +559,6 @@ const Sidebar = () => {
             <BoDNav selected={selected} setSelected={setSelected} />
           )}
 
-          <BoDNav selected={selected} setSelected={setSelected} />
-          <TreasurerNav selected={selected} setSelected={setSelected} />
-          <LoanOfficerNav selected={selected} setSelected={setSelected} />
-
           {!account && (
             <LoginNav selected={selected} setSelected={setSelected} />
           )}
