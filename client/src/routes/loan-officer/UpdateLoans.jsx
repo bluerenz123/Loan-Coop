@@ -111,7 +111,7 @@ function UpdateLoans() {
     <Box display="flex" flexDirection="column" height="100%">
       <Box display="flex" justifyContent="space-between">
         <Header
-          title="UPDATE LOANS (MONTHLY)"
+          title="UPDATE LOANS "
           subtitle="This is the summary monthly deductions of update loans"
         />
         {/* <Typography>[form month sht]</Typography> */}
@@ -194,7 +194,7 @@ function UpdateLoans() {
             textAlign="center"
             sx={{ p: "10px 20px", borderBottom: "4px solid #141b2d" }}
           >
-            LIST OF UPDATE LOANS (MM - YYYY)
+            LIST OF UPDATE LOANS
           </Typography>
           <Table sx={{ overflowX: "scroll" }} stickyHeader>
             <TableHead>

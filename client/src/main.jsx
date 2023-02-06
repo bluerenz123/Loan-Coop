@@ -18,8 +18,8 @@ import LoanOfficerLogin, {
   loanOfficerLoginAction,
 } from "./routes/loan-officer/Login";
 import LoanOfficerDashboard from "./routes/loan-officer/Dashboard";
-import BoDLogin from "./routes/board-of-director/Login";
-import TreasurerLogin from "./routes/treasurer/Login";
+import BoDLogin, { bodAction } from "./routes/board-of-director/Login";
+import TreasurerLogin, { treasurerAction } from "./routes/treasurer/Login";
 import Loan, { loanLoader } from "./routes/member/Loan";
 import LoanApplication, {
   LoanApplicationAction,
@@ -175,6 +175,7 @@ const router = createBrowserRouter([
               {
                 path: "login",
                 element: <TreasurerLogin />,
+                action: treasurerAction,
               },
               {
                 path: "logout",
@@ -214,6 +215,7 @@ const router = createBrowserRouter([
               {
                 path: "login",
                 element: <BoDLogin />,
+                action: bodAction,
               },
               {
                 path: "logout",

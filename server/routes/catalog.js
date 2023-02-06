@@ -39,6 +39,8 @@ const cashflow_controller = require("../controllers/cashflow");
 
 /// ADMIN ROUTES
 router.post("/loan-officer/login", admin_controller.loan_officer_login);
+router.post("/board-of-director/login", admin_controller.bod_login);
+router.post("/treasurer/login", admin_controller.treasurer_login);
 router.post("/admin/create", admin_controller.create);
 router.get("/admins", admin_controller.list);
 

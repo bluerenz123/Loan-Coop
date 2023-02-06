@@ -34,3 +34,30 @@ exports.loan_officer_login = async (req, res, next) => {
 
   return res.json(LF_user);
 };
+exports.treasurer_login = async (req, res, next) => {
+  let Trs_user = await Admin.findOne({
+    position: "treasurer",
+    email: req.body.email,
+    password: req.body.password,
+  });
+
+  if (Trs_user === null) {
+    return res.json({ error: "Wrong input email or password!" });
+  }
+
+  return res.json(Trs_user);
+};
+
+exports.bod_login = async (req, res, next) => {
+  let Trs_user = await Admin.findOne({
+    position: "board-of-director",
+    email: req.body.email,
+    password: req.body.password,
+  });
+
+  if (Trs_user === null) {
+    return res.json({ error: "Wrong input email or password!" });
+  }
+
+  return res.json(Trs_user);
+};

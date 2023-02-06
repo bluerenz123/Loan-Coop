@@ -77,8 +77,8 @@ function NewLoans() {
     <Box display="flex" flexDirection="column" height="100%">
       <Box display="flex" justifyContent="space-between">
         <Header
-          title="NEW LOANS (MONTHLY)"
-          subtitle="This is the summary of new loans per month"
+          title="NEW LOANS "
+          subtitle="This is the summary of new loans."
         />
         <Typography>[some form]</Typography>
       </Box>

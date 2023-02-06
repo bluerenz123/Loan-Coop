@@ -507,9 +507,11 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  TUP COOP
-                </Typography>
+                <img
+                  src="/TUP-MMPC-Logo.png"
+                  alt="are"
+                  style={{ width: "100%" }}
+                />
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
